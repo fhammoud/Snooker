@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Snooker Stats FX:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Snooker_Stats_FX_jar</output-path>
+    <root id="archive" name="Snooker Stats FX.jar">
+      <element id="module-output" name="Snooker Stats FX" />
+    </root>
+  </artifact>
+</component>

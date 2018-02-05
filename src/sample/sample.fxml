@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+  <tabs>
+    <Tab closable="false" text="Match">
+      <content>
+        <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="500.0">
+               <children>
+                  <GridPane alignment="CENTER" prefHeight="721.0" prefWidth="750.0" style="-fx-background-color: green;">
+                     <children>
+                        <Button fx:id="blue" alignment="CENTER" mnemonicParsing="false" onAction="#handle" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: blue; -fx-background-radius: 50;" GridPane.columnIndex="4" />
+                        <Button fx:id="pink" alignment="CENTER" mnemonicParsing="false" onAction="#handle" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: pink; -fx-background-radius: 50;" GridPane.columnIndex="5" />
+                        <Button fx:id="black" alignment="CENTER" mnemonicParsing="false" onAction="#handle" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: black; -fx-background-radius: 50;" GridPane.columnIndex="6" />
+                        <Button fx:id="red" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handle" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: red; -fx-background-radius: 50;" text="15">
+                           <font>
+                              <Font size="36.0" />
+                           </font></Button>
+                        <Button fx:id="yellow" mnemonicParsing="false" onAction="#handle" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" GridPane.columnIndex="1" />
+                        <Button fx:id="green" mnemonicParsing="false" onAction="#handle" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: seagreen; -fx-background-radius: 50;" GridPane.columnIndex="2" />
+                        <Button fx:id="brown" mnemonicParsing="false" onAction="#handle" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: brown; -fx-background-radius: 50;" GridPane.columnIndex="3" />
+                        <RadioButton fx:id="shortPot" mnemonicParsing="false" selected="true" text="Short" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="potType" />
+                           </toggleGroup>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </RadioButton>
+                        <RadioButton fx:id="longPot" mnemonicParsing="false" text="Long" textFill="WHITE" toggleGroup="$potType" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="18.0" />
+                           </font></RadioButton>
+                        <Button fx:id="miss" mnemonicParsing="false" onAction="#handle" prefHeight="90.0" prefWidth="90.0" text="Miss" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Button>
+                        <Label fx:id="score1" alignment="CENTER" contentDisplay="CENTER" prefHeight="100.0" prefWidth="108.0" text="0" textFill="WHITE" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                           <font>
+                              <Font size="64.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="score2" alignment="CENTER" contentDisplay="CENTER" opacity="0.5" prefHeight="100.0" prefWidth="110.0" text="0" textFill="WHITE" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                           <font>
+                              <Font size="64.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="safety" mnemonicParsing="false" onAction="#handle" prefHeight="90.0" prefWidth="90.0" text="Safety" GridPane.columnIndex="5" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Button>
+                        <RadioButton fx:id="foul" mnemonicParsing="false" text="Foul" textFill="WHITE" toggleGroup="$potType" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="18.0" />
+                           </font></RadioButton>
+                        <Label fx:id="remaining" alignment="CENTER" contentDisplay="CENTER" prefHeight="53.0" prefWidth="108.0" text="147" textFill="WHITE" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="4">
+                           <font>
+                              <Font size="64.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="break1" alignment="TOP_CENTER" contentDisplay="CENTER" prefHeight="145.0" prefWidth="107.0" text="0" textFill="WHITE" textOverrun="CLIP" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <font>
+                              <Font size="36.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="break2" alignment="TOP_CENTER" contentDisplay="CENTER" prefHeight="145.0" prefWidth="107.0" text="0" textFill="WHITE" GridPane.columnIndex="5" GridPane.rowIndex="3">
+                           <font>
+                              <Font size="36.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="free" alignment="CENTER" mnemonicParsing="false" onAction="#handle" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: gray; -fx-background-radius: 50;" text="Free" textFill="WHITE" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="switchP" mnemonicParsing="false" onAction="#handle" prefHeight="75.0" prefWidth="110.0" text="Switch" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Button>
+                        <Button fx:id="undo" disable="true" mnemonicParsing="false" onAction="#handle" prefHeight="90.0" prefWidth="90.0" text="Undo" GridPane.columnIndex="6" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Button>
+                        <Label alignment="TOP_RIGHT" prefHeight="145.0" prefWidth="278.0" text="Quan &quot;Asian Shaun Murphy&quot; Pham" textFill="WHITE" GridPane.columnSpan="3" GridPane.rowIndex="4">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="TOP_CENTER" prefHeight="145.0" prefWidth="321.0" text="Faris &quot;Jordanian Sniper&quot; Hammoud" textFill="WHITE" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="4">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Stats">
+      <content>
+        <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="500.0">
+               <children>
+                  <Label fx:id="potSuccess1" alignment="CENTER" contentDisplay="CENTER" layoutX="275.0" layoutY="114.0" prefHeight="50.0" prefWidth="100.0" text="0.0%">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="potSuccess2" alignment="CENTER" contentDisplay="CENTER" layoutX="375.0" layoutY="114.0" prefHeight="50.0" prefWidth="100.0" text="0.0%">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" layoutX="300.0" layoutY="64.0" prefHeight="50.0" prefWidth="150.0" text="Pot Success %">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" layoutX="225.0" layoutY="164.0" prefHeight="50.0" prefWidth="300.0" text="Long Pot Success %">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="longPotSuccess1" alignment="CENTER" contentDisplay="CENTER" layoutX="275.0" layoutY="214.0" prefHeight="50.0" prefWidth="100.0" text="0.0%">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="longPotSuccess2" alignment="CENTER" contentDisplay="CENTER" layoutX="375.0" layoutY="214.0" prefHeight="50.0" prefWidth="100.0" text="0.0%">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" layoutX="300.0" layoutY="264.0" prefHeight="50.0" prefWidth="150.0" text="Highest Break">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="highestBreak1" alignment="CENTER" contentDisplay="CENTER" layoutX="275.0" layoutY="314.0" prefHeight="50.0" prefWidth="100.0" text="0">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="highestBreak2" alignment="CENTER" contentDisplay="CENTER" layoutX="375.0" layoutY="314.0" prefHeight="50.0" prefWidth="100.0" text="0">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="25.0" layoutY="14.0" prefHeight="50.0" prefWidth="350.0" text="Quan &quot;Asian Shaun Murphy&quot; Pham">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="375.0" layoutY="14.0" prefHeight="50.0" prefWidth="350.0" text="Faris &quot;Jordanian Sniper&quot; Hammoud">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children></AnchorPane>
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>
