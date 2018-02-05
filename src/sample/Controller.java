@@ -56,6 +56,7 @@ public class Controller implements EventHandler<ActionEvent> {
     public Label longPotSuccess2;
     public Label highestBreak1;
     public Label highestBreak2;
+    public Label difference;
 
     private Label potSuccessLabel;
     private Label longPotSuccessLabel;
@@ -79,13 +80,8 @@ public class Controller implements EventHandler<ActionEvent> {
     public void handle(ActionEvent event) {
 
         if (event.getSource().equals(red)) {
-            reds -= 1;
-            red.setText("" + reds);
-            if (reds == 0) {
-                lastColor = true;
-                red.setDisable(true);
-            }
             addScore(1);
+            red.setText("" + reds);
         }
         else if (event.getSource().equals(yellow)) {
             addScore(2);
@@ -124,6 +120,8 @@ public class Controller implements EventHandler<ActionEvent> {
         else if (event.getSource().equals(switchP)) {
             switchPlayer();
         }
+        shortPot.setSelected(true);
+        difference.setText("" + Math.abs(player1.getScore() - player2.getScore()));
     }
 
     private void addScore(int score) {
@@ -135,6 +133,13 @@ public class Controller implements EventHandler<ActionEvent> {
             if (score < 4) score = 4;
         } else {
             if (score == 1 || pointsLeft <= 27) {
+                if (score == 1) {
+                    reds -= 1;
+                    if (reds == 0) {
+                        lastColor = true;
+                        red.setDisable(true);
+                    }
+                }
                 pointsLeft -= score;
                 if (pointsLeft <= 27)
                     disableColor(score, true);
@@ -151,7 +156,6 @@ public class Controller implements EventHandler<ActionEvent> {
             addShot(shot);
         }
 
-        shortPot.setSelected(true);
         addScoreTotal(score);
 
         // Re-spot black

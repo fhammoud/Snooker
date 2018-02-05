@@ -3,6 +3,7 @@ package sample;
 import java.io.Serializable;
 
 public class Shot implements Serializable {
+
     private String type;
     private boolean success;
 

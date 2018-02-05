@@ -102,6 +102,11 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
+                        <Label fx:id="difference" alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="107.0" text="0" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
                      </children>
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
