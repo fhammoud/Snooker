@@ -4,6 +4,6 @@
 
 # IntelliJ project files
 gen
-/.idea/
-/Snooker Stats FX.iml
-/out/
+.idea
+*.iml
+out
