@@ -1,9 +1,7 @@
 package sample;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -18,7 +16,9 @@ public class Controller implements EventHandler<ActionEvent> {
     private Player player1;
     private Player player2;
     private Player player;
-    private int reds;
+    private ArrayList<Ball> reds;
+    private ArrayList<Ball> colors;
+    private ArrayList<Shot> shots;
     private int pointsLeft;
     private boolean lastColor;
 
@@ -29,7 +29,6 @@ public class Controller implements EventHandler<ActionEvent> {
     public Button blue;
     public Button pink;
     public Button black;
-    public Button free;
     public Button miss;
     public Button safety;
     public Button undo;
@@ -38,6 +37,7 @@ public class Controller implements EventHandler<ActionEvent> {
     public RadioButton shortPot;
     public RadioButton longPot;
     public RadioButton foul;
+    public RadioButton free;
     public ToggleGroup potType;
 
     public Label score1;
@@ -63,10 +63,10 @@ public class Controller implements EventHandler<ActionEvent> {
     private Label longPotSuccessLabel;
     private Label highestBreakLabel;
 
-    private ArrayList<Ball> balls;
-    private ArrayList<Shot> shots;
 
     public void initialize() {
+
+        // Set initial state
         load();
         player = player1;
         scoreLabel = score1;
@@ -74,78 +74,104 @@ public class Controller implements EventHandler<ActionEvent> {
         potSuccessLabel = potSuccess1;
         longPotSuccessLabel = longPotSuccess1;
         highestBreakLabel = highestBreak1;
-
-        reds = 15;
         lastColor = false;
 
+        // Initialize shots array
         shots = new ArrayList<>();
 
-        balls = new ArrayList<>(21);
-        balls.add(new Ball(7));
-        balls.add(new Ball(6));
-        balls.add(new Ball(5));
-        balls.add(new Ball(4));
-        balls.add(new Ball(3));
-        balls.add(new Ball(2));
-        for (int i = 0; i < 15; i++)
-            balls.add(new Ball(1));
+        // Create array of colors
+        colors = new ArrayList<>(6);
+        colors.add(new Ball(7));
+        colors.add(new Ball(6));
+        colors.add(new Ball(5));
+        colors.add(new Ball(4));
+        colors.add(new Ball(3));
+        colors.add(new Ball(2));
 
+        // Create array of reds
+        reds = new ArrayList<>(15);
+        for (int i = 0; i < 5; i++)
+            reds.add(new Ball(1));
+
+        // Set initial remaining points
         pointsLeft = getPointsLeft();
+        remaining.setText("" + pointsLeft);
     }
 
     @Override
     public void handle(ActionEvent event) {
 
         int score = 0;
+        String type = "";
+        boolean success = true;
+        Shot shot = null;
+
+        // Check radio buttons
+        if (shortPot.isSelected()) {
+            type = "short";
+        } else if (longPot.isSelected()) {
+            type = "long";
+        } else if (foul.isSelected()) {
+            type = "foul";
+            success = false;
+        } else if (free.isSelected()) {
+            type = "free";
+        }
+
+        // Handle buttons
         if (event.getSource().equals(red)) {
-//            addScore(1);
             score = 1;
-            red.setText("" + reds);
         } else if (event.getSource().equals(yellow)) {
-//            addScore(2);
             score = 2;
         } else if (event.getSource().equals(green)) {
-//            addScore(3);
             score = 3;
         } else if (event.getSource().equals(brown)) {
-//            addScore(4);
             score = 4;
         } else if (event.getSource().equals(blue)) {
-//            addScore(5);
             score = 5;
         } else if (event.getSource().equals(pink)) {
-//            addScore(6);
             score = 6;
         } else if (event.getSource().equals(black)) {
-//            addScore(7);
             score = 7;
-        } else if (event.getSource().equals(free)) {
-//            pointsLeft += 8;
-//            addScore(1);
-            score = 1;
         } else if (event.getSource().equals(miss)) {
-            Shot shot = null;
-            if (shortPot.isSelected())
-                shot = new Shot("short", false);
-            else if (longPot.isSelected())
-                shot = new Shot("long", false);
-            addShot(shot);
-            switchPlayer();
+            success = false;
+//            switchPlayer();
         } else if (event.getSource().equals(safety)) {
-            switchPlayer();
+            type = "safety";
+//            switchPlayer();
         } else if (event.getSource().equals(switchP)) {
             switchPlayer();
+            return;
+        } else if (event.getSource().equals(undo)) {
+            popShot();
+            return;
         }
 
+        // Update scores
         if (score == 1) {
-            popBall();
-            pointsLeft -= 1;
-        }
-        else
-            pointsLeft = getPointsLeft();
+            if (!type.equals("free"))
+                popBall(score);
+            pointsLeft -= score;
+        } else {
+            if (lastColor)
+                popBall(score);
 
-        shortPot.setSelected(true);
-        difference.setText("" + Math.abs(player1.getScore() - player2.getScore()));
+            if (reds.size() == 0)
+                lastColor = true;
+
+            pointsLeft = getPointsLeft();
+        }
+        addShot(new Shot(player, type, new Ball(score), success));
+
+        if (score > 0) {
+//            addScore(score);
+//            addBreak(score);
+        } else
+            switchPlayer();
+
+        updateStats();
+        updateTable();
+        remaining.setText("" + pointsLeft);
     }
 
     /*private void addScore(int score) {
@@ -212,9 +238,6 @@ public class Controller implements EventHandler<ActionEvent> {
             highestBreakLabel = highestBreak1;
             score1.setOpacity(1.0);
         }
-
-        pointsLeft = getPointsLeft();
-        remaining.setText("" + pointsLeft);
     }
 
     private void disableColors(boolean bool) {
@@ -251,38 +274,93 @@ public class Controller implements EventHandler<ActionEvent> {
 
     private int getPointsLeft() {
 
-        int total = 0;
-        for (Ball ball : balls) {
-            if (ball.getValue() == 1)
-                total += 8;
-            else
-                total += ball.getValue();
+        int total = reds.size() * 8;
+        for (Ball ball : colors) {
+            total += ball.getValue();
         }
 
         return total;
     }
 
-    private void addScoreTotal(int score) {
+    private void addScore(int score) {
         player.addScore(score);
-        scoreLabel.setText("" + player.getScore());
+//        scoreLabel.setText("" + player.getScore());
     }
 
     private void addBreak(int score) {
         player.addBreakScore(score);
-        breakLabel.setText("" + player.getBreakScore());
+//        breakLabel.setText("" + player.getBreakScore());
     }
 
     private void addShot(Shot shot) {
-        DecimalFormat df = new DecimalFormat("##0.0");
+        shots.add(shot);
         player.addShot(shot);
+        /*updateStats();
+        updateTable();*/
+
+//        save();
+    }
+
+    private void updateStats() {
+        DecimalFormat df = new DecimalFormat("##0.0");
         potSuccessLabel.setText("" + df.format(player.getPotSuccess()) + "%");
         longPotSuccessLabel.setText("" + df.format(player.getLongPotSuccess()) + "%");
         highestBreakLabel.setText("" + player.getHighestBreak());
-        save();
     }
 
-    private void popBall() {
-        balls.remove(balls.size() - 1);
+    private void updateTable() {
+        if (reds.size() == 0)
+            red.setDisable(true);
+
+        switch (colors.size()) {
+            case 0: black.setDisable(true); break;
+            case 1: pink.setDisable(true); break;
+            case 2: blue.setDisable(true); break;
+            case 3: brown.setDisable(true); break;
+            case 4: green.setDisable(true); break;
+            case 5: yellow.setDisable(true); break;
+        }
+
+        if (shots.size() == 0)
+            undo.setDisable(true);
+        else
+            undo.setDisable(false);
+
+        red.setText("" + reds.size());
+        remaining.setText("" + pointsLeft);
+        shortPot.setSelected(true);
+        difference.setText("" + Math.abs(player1.getScore() - player2.getScore()));
+        scoreLabel.setText("" + player.getScore());
+        breakLabel.setText("" + player.getBreakScore());
+    }
+
+    private void popBall(int score) {
+        if (score == 1)
+            reds.remove(reds.size() - 1);
+        else
+            colors.remove(colors.size() - 1);
+    }
+
+    private void popShot() {
+        Shot shot = shots.remove(shots.size() - 1);
+        Ball ball = shot.getBall();
+        if (ball.getValue() == 1) {
+            reds.add(ball);
+            pointsLeft += 1;
+        } else if (ball.getValue() > 1) {
+            if (colors.size() == 0) {
+                colors.add(ball);
+                pointsLeft += ball.getValue();
+            } else {
+                pointsLeft += 7;
+            }
+        }
+
+        Player tempPlayer = shot.getOwner();
+        tempPlayer.removeShot();
+        tempPlayer.addBreakScore(-ball.getValue());
+        updateStats();
+        updateTable();
     }
 
     private void save() {

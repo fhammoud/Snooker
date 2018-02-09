@@ -63,16 +63,27 @@ public class Player implements Serializable {
 
     public void addShot(Shot shot) {
         this.shots.add(shot);
+        addScore(shot.getBall().getValue());
+        addBreakScore(shot.getBall().getValue());
+    }
+
+    public void removeShot() {
+        Shot shot = this.shots.remove(this.shots.size() - 1);
+        this.score -= shot.getBall().getValue();
     }
 
     public double getPotSuccess() {
-        int count = 0;
+        int potCount = 0;
+        int successCount = 0;
         int size = shots.size();
         for (Shot shot : shots)
-            if (shot.isSuccess())
-                count++;
-        if (size == 0) size++;
-        return (double)count / size * 100;
+            if (!shot.getType().equals("safety")) {
+                potCount++;
+                if (shot.isSuccess())
+                    successCount++;
+            }
+        if (potCount == 0) potCount++;
+        return (double)successCount / potCount * 100;
     }
 
     public double getLongPotSuccess() {
