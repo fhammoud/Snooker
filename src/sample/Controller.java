@@ -169,8 +169,8 @@ public class Controller implements EventHandler<ActionEvent> {
         } else
             switchPlayer();
 
-        updateStats();
         updateTable();
+        updateStats();
         remaining.setText("" + pointsLeft);
     }
 
@@ -217,7 +217,7 @@ public class Controller implements EventHandler<ActionEvent> {
 
     private void switchPlayer() {
 
-        player.setBreakScore(0);
+//        player.setBreakScore(0);
         scoreLabel.setOpacity(0.5);
         breakLabel.setText("0");
 
@@ -238,6 +238,16 @@ public class Controller implements EventHandler<ActionEvent> {
             highestBreakLabel = highestBreak1;
             score1.setOpacity(1.0);
         }
+    }
+
+    private void disableBalls(boolean bool) {
+        red.setDisable(bool);
+        yellow.setDisable(bool);
+        green.setDisable(bool);
+        brown.setDisable(bool);
+        blue.setDisable(bool);
+        pink.setDisable(bool);
+        black.setDisable(bool);
     }
 
     private void disableColors(boolean bool) {
@@ -309,16 +319,39 @@ public class Controller implements EventHandler<ActionEvent> {
     }
 
     private void updateTable() {
+//        disableBalls(false);
+
         if (reds.size() == 0)
             red.setDisable(true);
+        else
+            red.setDisable(false);
 
         switch (colors.size()) {
-            case 0: black.setDisable(true); break;
-            case 1: pink.setDisable(true); break;
-            case 2: blue.setDisable(true); break;
-            case 3: brown.setDisable(true); break;
-            case 4: green.setDisable(true); break;
-            case 5: yellow.setDisable(true); break;
+            case 0:
+                black.setDisable(true);
+                break;
+            case 1:
+                pink.setDisable(true);
+                black.setDisable(false);
+                break;
+            case 2:
+                blue.setDisable(true);
+                pink.setDisable(false);
+                break;
+            case 3:
+                brown.setDisable(true);
+                blue.setDisable(false);
+                break;
+            case 4:
+                green.setDisable(true);
+                brown.setDisable(false);
+                break;
+            case 5:
+                yellow.setDisable(true);
+                green.setDisable(false);
+                break;
+            case 6:
+                yellow.setDisable(false); break;
         }
 
         if (shots.size() == 0)
@@ -346,9 +379,9 @@ public class Controller implements EventHandler<ActionEvent> {
         Ball ball = shot.getBall();
         if (ball.getValue() == 1) {
             reds.add(ball);
-            pointsLeft += 1;
+            pointsLeft = getPointsLeft();
         } else if (ball.getValue() > 1) {
-            if (colors.size() == 0) {
+            if (colors.size() < 6) {
                 colors.add(ball);
                 pointsLeft += ball.getValue();
             } else {
@@ -357,10 +390,12 @@ public class Controller implements EventHandler<ActionEvent> {
         }
 
         Player tempPlayer = shot.getOwner();
+        if (!tempPlayer.equals(player))
+            switchPlayer();
         tempPlayer.removeShot();
-        tempPlayer.addBreakScore(-ball.getValue());
-        updateStats();
+//        tempPlayer.addBreakScore(-ball.getValue());
         updateTable();
+        updateStats();
     }
 
     private void save() {

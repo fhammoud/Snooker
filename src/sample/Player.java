@@ -40,7 +40,17 @@ public class Player implements Serializable {
     }
 
     public int getBreakScore() {
-        return breakScore;
+        int br = 0;
+        for (int i = shots.size() - 1; i >= 0; i--) {
+            Shot shot = shots.get(i);
+            if (shot.isSuccess() && !shot.getType().equals("safety")) {
+                br += shot.getBall().getValue();
+            } else
+                break;
+        }
+        setHighestBreak(br);
+
+        return br;
     }
 
     public void setBreakScore(int breakScore) {
@@ -64,7 +74,7 @@ public class Player implements Serializable {
     public void addShot(Shot shot) {
         this.shots.add(shot);
         addScore(shot.getBall().getValue());
-        addBreakScore(shot.getBall().getValue());
+//        addBreakScore(shot.getBall().getValue());
     }
 
     public void removeShot() {
