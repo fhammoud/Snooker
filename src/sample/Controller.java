@@ -75,6 +75,7 @@ public class Controller implements EventHandler<ActionEvent> {
         longPotSuccessLabel = longPotSuccess1;
         highestBreakLabel = highestBreak1;
         lastColor = false;
+        int redsCount = 15;
 
         // Initialize shots array
         shots = new ArrayList<>();
@@ -89,9 +90,10 @@ public class Controller implements EventHandler<ActionEvent> {
         colors.add(new Ball(2));
 
         // Create array of reds
-        reds = new ArrayList<>(15);
-        for (int i = 0; i < 5; i++)
+        reds = new ArrayList<>(redsCount);
+        for (int i = 0; i < redsCount; i++)
             reds.add(new Ball(1));
+        red.setText("" + redsCount);
 
         // Set initial remaining points
         pointsLeft = getPointsLeft();
@@ -104,19 +106,6 @@ public class Controller implements EventHandler<ActionEvent> {
         int score = 0;
         String type = "";
         boolean success = true;
-        Shot shot = null;
-
-        // Check radio buttons
-        if (shortPot.isSelected()) {
-            type = "short";
-        } else if (longPot.isSelected()) {
-            type = "long";
-        } else if (foul.isSelected()) {
-            type = "foul";
-            success = false;
-        } else if (free.isSelected()) {
-            type = "free";
-        }
 
         // Handle buttons
         if (event.getSource().equals(red)) {
@@ -135,10 +124,8 @@ public class Controller implements EventHandler<ActionEvent> {
             score = 7;
         } else if (event.getSource().equals(miss)) {
             success = false;
-//            switchPlayer();
         } else if (event.getSource().equals(safety)) {
             type = "safety";
-//            switchPlayer();
         } else if (event.getSource().equals(switchP)) {
             switchPlayer();
             return;
@@ -147,13 +134,30 @@ public class Controller implements EventHandler<ActionEvent> {
             return;
         }
 
+        // Check radio buttons
+        if (shortPot.isSelected() && !type.equals("safety")) {
+            type = "short";
+        } else if (longPot.isSelected()) {
+            type = "long";
+        } else if (foul.isSelected()) {
+            type = "foul";
+            success = false;
+            if (score < 4)
+                score = 4;
+        } else if (free.isSelected()) {
+            type = "free";
+        }
+
         // Update scores
         if (score == 1) {
-            if (!type.equals("free"))
-                popBall(score);
+            if (type.equals("free")) {
+                reds.add(new Ball(1));
+                pointsLeft = getPointsLeft();
+            }
+            popBall(score);
             pointsLeft -= score;
         } else {
-            if (lastColor)
+            if (lastColor && !type.equals("free"))
                 popBall(score);
 
             if (reds.size() == 0)
@@ -163,62 +167,21 @@ public class Controller implements EventHandler<ActionEvent> {
         }
         addShot(new Shot(player, type, new Ball(score), success));
 
-        if (score > 0) {
-//            addScore(score);
-//            addBreak(score);
-        } else
+        if (score == 0)
             switchPlayer();
+        else if (type.equals("foul")) {
+            switchPlayer();
+            player.addScore(score);
+        }
 
         updateTable();
         updateStats();
         remaining.setText("" + pointsLeft);
     }
 
-    /*private void addScore(int score) {
-        Shot shot = null;
-        if (foul.isSelected()) {
-            shot = new Shot("foul", false);
-            addShot(shot);
-            switchPlayer();
-            if (score < 4) score = 4;
-        } else {
-            if (score == 1 || pointsLeft <= 27) {
-                if (score == 1) {
-                    reds -= 1;
-                    if (reds == 0) {
-                        lastColor = true;
-                        red.setDisable(true);
-                    }
-                }
-                pointsLeft -= score;
-                if (pointsLeft <= 27)
-                    disableColor(score, true);
-            }
-            else
-                pointsLeft = getPointsLeft();
-
-            if (shortPot.isSelected())
-                shot = new Shot("short", true);
-            else if (longPot.isSelected())
-                shot = new Shot("long", true);
-
-            addBreak(score);
-            addShot(shot);
-        }
-
-        addScoreTotal(score);
-
-        // Re-spot black
-        if (pointsLeft == 0 && player1.getScore() == player2.getScore())
-            pointsLeft = 7;
-
-        remaining.setText("" + pointsLeft);
-    }*/
-
     private void switchPlayer() {
-
-//        player.setBreakScore(0);
         scoreLabel.setOpacity(0.5);
+        breakLabel.setOpacity(0.5);
         breakLabel.setText("0");
 
         if (player.equals(player1)) {
@@ -229,6 +192,7 @@ public class Controller implements EventHandler<ActionEvent> {
             longPotSuccessLabel = longPotSuccess2;
             highestBreakLabel = highestBreak2;
             score2.setOpacity(1.0);
+            break2.setOpacity(1.0);
         } else {
             player = player1;
             scoreLabel = score1;
@@ -237,78 +201,22 @@ public class Controller implements EventHandler<ActionEvent> {
             longPotSuccessLabel = longPotSuccess1;
             highestBreakLabel = highestBreak1;
             score1.setOpacity(1.0);
-        }
-    }
-
-    private void disableBalls(boolean bool) {
-        red.setDisable(bool);
-        yellow.setDisable(bool);
-        green.setDisable(bool);
-        brown.setDisable(bool);
-        blue.setDisable(bool);
-        pink.setDisable(bool);
-        black.setDisable(bool);
-    }
-
-    private void disableColors(boolean bool) {
-        if (bool) {
-            red.setDisable(false);
-            yellow.setDisable(true);
-            green.setDisable(true);
-            brown.setDisable(true);
-            blue.setDisable(true);
-            pink.setDisable(true);
-            black.setDisable(true);
-        } else {
-            red.setDisable(true);
-            yellow.setDisable(false);
-            green.setDisable(false);
-            brown.setDisable(false);
-            blue.setDisable(false);
-            pink.setDisable(false);
-            black.setDisable(false);
-        }
-    }
-
-    private void disableColor(int score, boolean bool) {
-        switch (score) {
-            case 1: red.setDisable(bool); break;
-            case 2: yellow.setDisable(bool); break;
-            case 3: green.setDisable(bool); break;
-            case 4: brown.setDisable(bool); break;
-            case 5: blue.setDisable(bool); break;
-            case 6: pink.setDisable(bool); break;
-            case 7: black.setDisable(bool); break;
+            break1.setOpacity(1.0);
         }
     }
 
     private int getPointsLeft() {
-
         int total = reds.size() * 8;
         for (Ball ball : colors) {
             total += ball.getValue();
         }
-
         return total;
-    }
-
-    private void addScore(int score) {
-        player.addScore(score);
-//        scoreLabel.setText("" + player.getScore());
-    }
-
-    private void addBreak(int score) {
-        player.addBreakScore(score);
-//        breakLabel.setText("" + player.getBreakScore());
     }
 
     private void addShot(Shot shot) {
         shots.add(shot);
         player.addShot(shot);
-        /*updateStats();
-        updateTable();*/
-
-//        save();
+        save();
     }
 
     private void updateStats() {
@@ -319,49 +227,18 @@ public class Controller implements EventHandler<ActionEvent> {
     }
 
     private void updateTable() {
-//        disableBalls(false);
-
-        if (reds.size() == 0)
-            red.setDisable(true);
-        else
-            red.setDisable(false);
-
-        switch (colors.size()) {
-            case 0:
-                black.setDisable(true);
-                break;
-            case 1:
-                pink.setDisable(true);
-                black.setDisable(false);
-                break;
-            case 2:
-                blue.setDisable(true);
-                pink.setDisable(false);
-                break;
-            case 3:
-                brown.setDisable(true);
-                blue.setDisable(false);
-                break;
-            case 4:
-                green.setDisable(true);
-                brown.setDisable(false);
-                break;
-            case 5:
-                yellow.setDisable(true);
-                green.setDisable(false);
-                break;
-            case 6:
-                yellow.setDisable(false); break;
-        }
-
         if (shots.size() == 0)
             undo.setDisable(true);
         else
             undo.setDisable(false);
 
+        disableBalls(true);
+        miss.setDisable(true);
+        if (potType.getSelectedToggle() != null)
+            potType.getSelectedToggle().setSelected(false);
+
         red.setText("" + reds.size());
         remaining.setText("" + pointsLeft);
-        shortPot.setSelected(true);
         difference.setText("" + Math.abs(player1.getScore() - player2.getScore()));
         scoreLabel.setText("" + player.getScore());
         breakLabel.setText("" + player.getBreakScore());
@@ -376,26 +253,70 @@ public class Controller implements EventHandler<ActionEvent> {
 
     private void popShot() {
         Shot shot = shots.remove(shots.size() - 1);
+        Player shotOwner = shot.getOwner();
+
+        boolean ownerIsPlayer = shotOwner.equals(player);
+
         Ball ball = shot.getBall();
-        if (ball.getValue() == 1) {
-            reds.add(ball);
+        String type = shot.getType();
+        int value = ball.getValue();
+
+        if (value == 1) {
+            if (!type.equals("free"))
+                reds.add(ball);
             pointsLeft = getPointsLeft();
-        } else if (ball.getValue() > 1) {
+        } else if (value > 1) {
             if (colors.size() < 6) {
-                colors.add(ball);
-                pointsLeft += ball.getValue();
-            } else {
+                if (!type.equals("free"))
+                    colors.add(ball);
+                pointsLeft += value;
+            } else if (!type.equals("foul")) {
                 pointsLeft += 7;
             }
         }
 
-        Player tempPlayer = shot.getOwner();
-        if (!tempPlayer.equals(player))
+        if (type.equals("foul")) {
+            if (shotOwner.equals(player))
+                switchPlayer();
+            player.addScore(-value);
+            scoreLabel.setText("" + player.getScore());
+        }
+
+        if (!shotOwner.equals(player)) {
             switchPlayer();
-        tempPlayer.removeShot();
-//        tempPlayer.addBreakScore(-ball.getValue());
+        }
+
+        shotOwner.removeShot();
         updateTable();
         updateStats();
+        save();
+    }
+
+    private void disableBalls(boolean bool) {
+        red.setDisable(bool);
+        yellow.setDisable(bool);
+        green.setDisable(bool);
+        brown.setDisable(bool);
+        blue.setDisable(bool);
+        pink.setDisable(bool);
+        black.setDisable(bool);
+    }
+
+    public void disableBalls(ActionEvent actionEvent) {
+        miss.setDisable(false);
+        if (reds.size() == 0)
+            red.setDisable(true);
+        else
+            red.setDisable(false);
+
+        switch (colors.size()) {
+            case 6: yellow.setDisable(false);
+            case 5: green.setDisable(false);
+            case 4: brown.setDisable(false);
+            case 3: blue.setDisable(false);
+            case 2: pink.setDisable(false);
+            case 1: black.setDisable(false);
+        }
     }
 
     private void save() {
@@ -441,9 +362,7 @@ public class Controller implements EventHandler<ActionEvent> {
             e.printStackTrace();
         }
 
-        player1.setBreakScore(0);
         player1.setScore(0);
-        player2.setBreakScore(0);
         player2.setScore(0);
     }
 }

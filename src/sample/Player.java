@@ -10,6 +10,7 @@ public class Player implements Serializable {
     private int breakScore;
     private int highestBreak;
 
+    private ArrayList<Shot> currentGameShots;
     private ArrayList<Shot> shots;
 
     public Player(String name) {
@@ -17,6 +18,7 @@ public class Player implements Serializable {
         this.score = 0;
         this.highestBreak = 0;
         shots = new ArrayList<>();
+        currentGameShots = new ArrayList<>();
     }
 
     public String getName() {
@@ -41,19 +43,18 @@ public class Player implements Serializable {
 
     public int getBreakScore() {
         int br = 0;
-        for (int i = shots.size() - 1; i >= 0; i--) {
-            Shot shot = shots.get(i);
+        for (int i = currentGameShots.size() - 1; i >= 0; i--) {
+            Shot shot = currentGameShots.get(i);
             if (shot.isSuccess() && !shot.getType().equals("safety")) {
                 br += shot.getBall().getValue();
             } else
                 break;
         }
-        setHighestBreak(br);
 
         return br;
     }
 
-    public void setBreakScore(int breakScore) {
+    /*public void setBreakScore(int breakScore) {
         this.breakScore = breakScore;
     }
 
@@ -62,22 +63,35 @@ public class Player implements Serializable {
         setHighestBreak(this.breakScore);
     }
 
-    public int getHighestBreak() {
-        return highestBreak;
-    }
-
     public void setHighestBreak(int highestBreak) {
         if (highestBreak > this.highestBreak)
             this.highestBreak = highestBreak;
+    }*/
+
+    public int getHighestBreak() {
+        int highest = 0;
+        int score = 0;
+        for (Shot shot : currentGameShots) {
+            if (shot.isSuccess() && !shot.getType().equals("safety")) {
+                score += shot.getBall().getValue();
+            }
+
+            if (score > highest)
+                highest = score;
+            score = 0;
+        }
+
+        return highest;
     }
 
     public void addShot(Shot shot) {
         this.shots.add(shot);
+        this.currentGameShots.add(shot);
         addScore(shot.getBall().getValue());
-//        addBreakScore(shot.getBall().getValue());
     }
 
     public void removeShot() {
+        this.currentGameShots.remove(this.currentGameShots.size() - 1);
         Shot shot = this.shots.remove(this.shots.size() - 1);
         this.score -= shot.getBall().getValue();
     }
@@ -85,7 +99,6 @@ public class Player implements Serializable {
     public double getPotSuccess() {
         int potCount = 0;
         int successCount = 0;
-        int size = shots.size();
         for (Shot shot : shots)
             if (!shot.getType().equals("safety")) {
                 potCount++;

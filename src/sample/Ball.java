@@ -1,6 +1,8 @@
 package sample;
 
-public class Ball {
+import java.io.Serializable;
+
+public class Ball implements Serializable {
     private int value;
 
     public Ball(int value) {

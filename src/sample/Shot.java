@@ -9,11 +9,6 @@ public class Shot implements Serializable {
     private Ball ball;
     private boolean success;
 
-    public Shot(String type, boolean success) {
-        this.type = type;
-        this.success = success;
-    }
-
     public Shot(Player owner, String type, Ball ball, boolean success) {
         this.owner = owner;
         this.type = type;
