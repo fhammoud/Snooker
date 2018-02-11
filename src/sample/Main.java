@@ -14,7 +14,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Snooker Stats");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("ball.png")));
-        primaryStage.setScene(new Scene(root, 750, 750));
+        primaryStage.setScene(new Scene(root, 1000, 1000));
 
         primaryStage.show();
     }
